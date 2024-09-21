@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  LambdaExecutionRole1:
+    Type: 'AWS::IAM::Role'
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: '2012-10-17'
+        Statement: 
+          - Effect: 'Allow'
+            Principal: 
+              Service: 
+                - 'lambda.amazonaws.com'
+            Action: 
+              - 'sts:AssumeRole'
+      Policies: 
+        - PolicyName: 'LambdaPolicy1'
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Statement: 
+              - Effect: 'Allow'
+                Action: 
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: 'Allow'
+                Action: 
+                  - 'eks:*'                  
+                Resource: '*'
+
+  MyPythonLambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: 'MyPythonLambdaFunction'
+      Handler: 'index.handler'
+      Role: !GetAtt LambdaExecutionRole1.Arn
+      Runtime: 'python3.9'
+      Code:
+        ZipFile: |
+          import logger
+          import boto3
+          import os
+          def handler(event, context):
+              print('Event: ', event)
+              return {
+                  'statusCode': 200,
+                  'body': 'Hello from Lambda!'
+              }
+      MemorySize: 128
+      Timeout: 10
+      Environment:
+        Variables:
+          ENV_VAR1: 'value11'
+          ENV_VAR2: 'value21'
