@@ -53,3 +53,4 @@ Resources:
         Variables:
           ENV_VAR1: 'value11'
           ENV_VAR2: 'value21'
+          ENV_VAR3: 'value31'
