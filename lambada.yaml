@@ -40,6 +40,7 @@ Resources:
           import logger
           import boto3
           import os
+          import datetime
           def handler(event, context):
               print('Event: ', event)
               return {
